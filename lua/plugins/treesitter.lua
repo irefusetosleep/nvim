@@ -1,7 +1,7 @@
 return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    ensure_installed = {"lua", "python", "javascript", "rust"}, -- Add other languages as needed
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
     highlight = {
         enable = true,
     },
