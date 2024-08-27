@@ -16,7 +16,7 @@ return {
     },
     dependancies = {"nvim-treesitter/nvim-treesitter"},
     preview = {
-      treesitter = false, -- Disable Tree-sitter in previews
+      treesitter = true,
     },
   },
   {

@@ -18,11 +18,11 @@ vim.opt.rtp:prepend(lazypath)
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = ","
-vim.g.maplocalleader = ","
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 vim.opt.number = true          -- Shows absolute line numbers
-vim.opt.relativenumber = false  -- Shows relative line numbers
+vim.opt.relativenumber = true  -- Shows relative line numbers
 
 vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
