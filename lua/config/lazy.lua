@@ -24,10 +24,28 @@ vim.g.maplocalleader = " "
 vim.opt.number = true          -- Shows absolute line numbers
 vim.opt.relativenumber = true  -- Shows relative line numbers
 
+vim.o.autoindent = true
 vim.o.tabstop = 2 -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
 vim.o.softtabstop = 2 -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 2 -- Number of spaces inserted when indenting
+
+vim.api.nvim_set_keymap("n", "<leader>lu", ":Lazy sync<CR>", { noremap = true, silent = false })
+vim.api.nvim_set_keymap("n", "<C-s>", ":wa<CR>", { noremap = true  })
+vim.api.nvim_set_keymap("i", "<C-s>", "<Esc>:wa<CR>a", { noremap = true  })
+vim.api.nvim_set_keymap("v", "<C-s>", "<Esc>:wa<CR>gv", { noremap = true  })
+
+-- temp fix for rust being gay
+
+for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) do
+    local default_diagnostic_handler = vim.lsp.handlers[method]
+    vim.lsp.handlers[method] = function(err, result, context, config)
+        if err ~= nil and err.code == -32802 then
+            return
+        end
+        return default_diagnostic_handler(err, result, context, config)
+    end
+end
 
 -- Setup lazy.nvim
 require("lazy").setup({

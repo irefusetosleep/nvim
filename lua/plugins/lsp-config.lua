@@ -1,10 +1,54 @@
-local lsp_servers = { "lua_ls", "rust_analyzer" }
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        update_in_insert = false,
+        debounce = 150,  -- Increase this value to reduce update frequency
+    }
+)
 
+local lsp_servers = { "ts_ls", "cssls"}
+
+local exceptions = { --for lsps that require extra setup 
+  superhtml = {
+    filetypes = {"superhtml", "lsp"}
+  },
+  lua_ls = {
+    {
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = { "vim" },
+          },
+        },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+    }
+  },
+  rust_analyzer = {
+    settings = {
+      ["rust-analyzer"] = {
+        cmd = { "C:/rust-analyzer-x86_64-pc-windows-msvc/rust-analyzer.exe" }, -- replace with the path to the version you installed,
+        cargo = {
+          allFeatures = false,    -- Only enable features as needed,
+        },
+        checkOnSave = {
+          command = "clippy",    -- Set to "check" if "clippy" is too resource-intensive
+        },
+        diagnostics = {
+          disabled = {"unresolved-proc-macro"},  -- Disable specific diagnostics that can cause lag
+        },
+        toolchain = "nightly"
+      },
+    },
+  }
+}
 return {
   --lspconfig
   {
     "neovim/nvim-lspconfig",
     dependencies = { "nvim-lua/plenary.nvim", "hrsh7th/cmp-nvim-lsp" },
+    --lazy = true,
     config = function()
       local lsp_config = require("lspconfig")
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -13,7 +57,10 @@ return {
       for _, lsp_server in pairs(lsp_servers) do
         lsp_config[lsp_server].setup({capabilities = capabilities})
       end
-      -- lsp_config.lua_ls.setup {capabilities = capabilities}
+
+      for lsp, settings in pairs(exceptions) do 
+        lsp_config[lsp].setup(settings)
+      end
 
       -- Set up keymaps that I dont use 🤤
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {desc = "Show keyword info."})
