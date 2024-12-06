@@ -1,1 +1,3 @@
+--test!
+
 require("config.lazy")
