@@ -5,7 +5,25 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     }
 )
 
-local lsp_servers = { "ts_ls", "cssls"}
+vim.o.updatetime = 250
+
+local function on_attach(client, buffer)
+  vim.api.nvim_create_autocmd("CursorHold", {
+    buffer = buffer,
+    callback = function()
+      vim.diagnostic.open_float(nil, {
+        focusable = false,
+        close_events = {"BufLeave", "CursorMoved", "InsertEnter", "FocusLost"},
+        border = "rounded",
+        source = "always",
+        prefix = "",
+        scope = "cursor",
+      })
+    end,
+  })
+end
+
+local lsp_servers = { "ts_ls", "cssls", "pyright"}
 
 local exceptions = { --for lsps that require extra setup 
   superhtml = {
@@ -41,7 +59,7 @@ local exceptions = { --for lsps that require extra setup
         toolchain = "nightly"
       },
     },
-  }
+  },
 }
 return {
   --lspconfig
@@ -55,17 +73,24 @@ return {
 
       -- Set up the autocompletion for each lsp server
       for _, lsp_server in pairs(lsp_servers) do
-        lsp_config[lsp_server].setup({capabilities = capabilities})
+        lsp_config[lsp_server].setup({
+          capabilities = capabilities,
+          on_attach = on_attach
+        })
       end
 
       for lsp, settings in pairs(exceptions) do 
-        lsp_config[lsp].setup(settings)
+        lsp_config[lsp].setup({
+          settings = settings,
+          on_attach = on_attach
+        })
       end
 
       -- Set up keymaps that I dont use 🤤
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {desc = "Show keyword info."})
       vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, {desc = "Show code actions."})
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition ,{desc = "Show definition."})
+      
     end
   },
 

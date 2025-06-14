@@ -3,21 +3,12 @@ return {
   config = function()
     require("presence").setup({
       main_image = "file",
-      neovim_image_text = "ball fart",
-      buttons = true,
-      log_level = nil,
+      auto_update = true,
 
-      state = function()
-        return vim.fn.getcwd()
-      end,
+      editing_text = "Editing %s",
+      workspace_text = "Working on %s",
+      line_number_text = "Line %l out of %L",
 
-      details = function()
-        local filename = vim.fn.expand('%:t')
-        local filetype = vim.bo.filetype
-        return filename ~= "" and filename .. " (" .. filetype .. ")" or "No file open"
-      end,
-
-      large_image_text = "ball fart"
     })
   end
 }
