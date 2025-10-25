@@ -23,12 +23,9 @@ local function on_attach(client, buffer)
   })
 end
 
-local lsp_servers = { "ts_ls", "cssls", "pyright"}
+local lsp_servers = { "ts_ls", "cssls", "superhtml", "cssls"}
 
 local exceptions = { --for lsps that require extra setup 
-  superhtml = {
-    filetypes = {"superhtml", "lsp"}
-  },
   lua_ls = {
     {
       settings = {
@@ -60,6 +57,19 @@ local exceptions = { --for lsps that require extra setup
       },
     },
   },
+  pyright = {
+    settings = {
+      python = {
+        analysis = {
+          extraPaths={
+            "./site-packages",
+            "./typings",
+            useLibraryCodeForTypes = true,
+          }
+        }
+      }
+    }
+  }
 }
 return {
   --lspconfig
